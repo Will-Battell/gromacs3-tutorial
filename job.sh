@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=protein-ligand
+#SBATCH --job-name=mpro-ligand-simulation
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=16
-#SBATCH --cpus-per-task=8
-#SBATCH --time=04:00:00
+#SBATCH --ntasks-per-node=128
+#SBATCH --cpus-per-task=1
+#SBATCH --time=10:00:00
 
-#SBATCH --account=e793-wbattell
+#SBATCH --account=e793-
 
 #SBATCH --partition=standard
 #SBATCH --qos=standard
@@ -25,8 +25,8 @@ export OMP_NUM_THREADS=1
 mkdir EM
 cd ./EM
 
-gmx grompp -f ../mdp-files/em.mdp -c ../8B2T-nirma.gro -p ../topol.top -o em.tpr  -maxwarn 5
-srun gmx_mpi mdrun -s em.tpr -c 8b2t-em.gro 
+gmx grompp -f ../mdp-files/em.mdp -c ../mpro-nirma.gro -p ../topol.top -o em.tpr  -maxwarn 5
+srun gmx_mpi mdrun -s em.tpr -c mpro-em.gro 
 
 cd ../
 
@@ -35,8 +35,8 @@ cd ../
 mkdir NVT
 cd ./NVT
 
-gmx grompp -f ../mdp-files/nvt.mdp -c ../EM/8b2t-em.gro -r ../EM/8b2t-em.gro -p ../topol.top -o nvt.tpr -maxwarn 5 
-srun gmx_mpi mdrun -s nvt.tpr -c 8b2t-nvt.gro
+gmx grompp -f ../mdp-files/nvt.mdp -c ../EM/mpro-em.gro -r ../EM/mpro-em.gro -p ../topol.top -o nvt.tpr -maxwarn 5 
+srun gmx_mpi mdrun -s nvt.tpr -c mpro-nvt.gro
 
 cd ../
 
@@ -45,17 +45,17 @@ cd ../
 mkdir NPT
 cd ./NPT
 
-gmx grompp -f ../mdp-files/npt.mdp -c ../NVT/8b2t-nvt.gro -r ../NVT/8b2t-nvt.gro -p ../topol.top -o npt.tpr -maxwarn 5
-srun gmx_mpi mdrun -s npt.tpr -c 8b2t-npt.gro
+gmx grompp -f ../mdp-files/npt.mdp -c ../NVT/mpro-nvt.gro -r ../NVT/mpro-nvt.gro -p ../topol.top -o npt.tpr -maxwarn 5
+srun gmx_mpi mdrun -s npt.tpr -c mpro-npt.gro
 
 cd ../
 
-# Long NVT production simulation - Long simulation used for data collection 
+# Long NPT production simulation - Long simulation used for data collection 
 
 mkdir MD
 cd ./MD
 
-gmx grompp -f ../mdp-files/md.mdp -c ../NPT/8b2t-npt.gro -r ../NPT/8b2t-npt.gro -p ../topol.top -o md.tpr -maxwarn 5
-srun gmx_mpi mdrun -s md.tpr -c 8b2t-md.gro
+gmx grompp -f ../mdp-files/md.mdp -c ../NPT/mpro-npt.gro -r ../NPT/mpro-npt.gro -p ../topol.top -o md.tpr -maxwarn 5
+srun gmx_mpi mdrun -s md.tpr -c mpro-nirma-md.gro
 
 cd ../
