@@ -25,7 +25,7 @@ export OMP_NUM_THREADS=1
 mkdir EM
 cd ./EM
 
-gmx grompp -f ../mdp-files/em.mdp -c ../mpro-nirmatrelvir.gro -p ../topol.top -o em.tpr  -maxwarn 5
+gmx grompp -f ../mdp-files/em.mdp -c ../mpro-nirmatrelvir-box.gro -p ../topol.top -o em.tpr  -maxwarn 5
 srun gmx_mpi mdrun -s em.tpr -c mpro-em.gro 
 
 cd ../
