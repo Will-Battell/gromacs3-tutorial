@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=mpro-ligand-simulation
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=128
-#SBATCH --cpus-per-task=1
+#SBATCH --ntasks-per-node=16
+#SBATCH --cpus-per-task=8
 #SBATCH --time=10:00:00
 
 #SBATCH --account=e793-
@@ -25,7 +25,7 @@ export OMP_NUM_THREADS=1
 mkdir EM
 cd ./EM
 
-gmx grompp -f ../mdp-files/em.mdp -c ../mpro-nirmatrelvir-box.gro -p ../topol.top -o em.tpr  -maxwarn 5
+gmx grompp -f ../mdp-files/em.mdp -c ../mpro-nirmatrelvir-final.gro -p ../topol.top -o em.tpr  -maxwarn 5
 srun gmx_mpi mdrun -s em.tpr -c mpro-em.gro 
 
 cd ../
